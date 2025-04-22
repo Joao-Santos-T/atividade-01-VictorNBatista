@@ -8,8 +8,6 @@ from typing import Optional
 
 @dataclass
 class Produto:
-    """Representação básica de um produto no estoque."""
-
     codigo: str
     nome: str
     preco: float
@@ -18,21 +16,25 @@ class Produto:
     estoque_minimo: int = 10
 
     def adicionar_estoque(self, quantidade: int) -> None:
-        """Adiciona quantidade ao estoque do produto."""
-        raise NotImplementedError()
+        if quantidade < 0:
+            raise ValueError("Quantidade a adicionar deve ser positiva")
+        self.quantidade += quantidade
 
     def remover_estoque(self, quantidade: int) -> bool:
-        """Remove quantidade do estoque do produto."""
-        raise NotImplementedError()
+        if quantidade < 0:
+            raise ValueError("Quantidade a remover deve ser positiva")
+        if quantidade > self.quantidade:
+            return False
+        self.quantidade -= quantidade
+        return True
 
     def verificar_estoque_baixo(self) -> bool:
-        """Verifica se o estoque está abaixo do mínimo."""
-        raise NotImplementedError()
+        return self.quantidade < self.estoque_minimo
 
     def calcular_valor_total(self) -> float:
-        """Calcula o valor total do produto em estoque."""
-        raise NotImplementedError()
+        return self.preco * self.quantidade
 
     def verificar_validade(self) -> bool:
-        """Verifica se o produto está dentro da validade."""
-        raise NotImplementedError() 
+        if self.data_validade is None:
+            return True
+        return datetime.now() <= self.data_validade
